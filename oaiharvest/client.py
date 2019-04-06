@@ -1,8 +1,10 @@
 from oaipmh.client import *
+import logging
+
 
 class RecoveringClient(Client):
 # oaipmh Client with option to recover from bad XML in metadata payload
-
+    logger = logging.getLogger( 'oaiharvest.harvest')
     def parse(self, xml):
         """Parse the XML to a lxml tree WITH parser option: recover=True.
         """
@@ -22,14 +24,14 @@ class RecoveringClient(Client):
         try:  
             return etree.XML( xml )
         except etree.XMLSyntaxError as perror:
-            logger.error(perror)
+            self.logger.error(perror)
             print( perror.error_log )
             try:
                 tree = etree.XML(xml, etree.XMLParser(recover=True)) # sdm7g: attempt to RECOVER
                 id = tree.xpath( '/oai:OAI-PMH/oai:ListRecords/oai:record/oai:header/oai:identifier', namespaces=self.getNamespaces() )
-                logger.warning( "Recoverable parse error on: {0}.oai_ead.xml".format(id[0].text) )
+                self.logger.warning( "Recoverable parse error on: {0}.oai_ead.xml".format(id[0].text) )
             except Exception as perror2:
-                logger.error(perror2)
+                self.logger.error(perror2)
             #         
             return tree
 
