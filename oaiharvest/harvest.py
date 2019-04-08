@@ -208,7 +208,7 @@ class DirectoryOAIHarvester(OAIHarvester):
         logger = logging.getLogger(__name__).getChild(self.__class__.__name__)
         if not os.path.isdir(os.path.dirname(fp)):
             # Missing base directory or sub-directory
-            logger.debug("Creating target directory {0}".format(self._dir))
+            logger.debug("Creating target directory {0}".format(os.path.dirname(fp)))
             os.makedirs(os.path.dirname(fp))
 
     def _get_output_filepath(self, header, metadataPrefix):
